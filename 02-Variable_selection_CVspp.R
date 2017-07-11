@@ -1,23 +1,27 @@
 setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
 
-###############################################################################
-# Consider and select from allowable combinations of variables within groups: 
-# for species with sufficient sample sizes for 3-fold cross-fire validation
-#
-# Field-collected groups:
-#  Nest tree variables: Tree species, decay class (intact or decayed snag), DBH (linear or quadratic),
-#      top condition (intact, broken before, or broken after)
-#  Nest patch variables: Snag density by size class (23-38cm, 38-50cm, >50cm, 23-50cm, >38cm),
-#      Snag density by species (pine, fir)
-#
-# Remotely sensed groups:
-#  Topography: slope, aspect (cosine + sine)
-#  Burn severity (MTBS): local (3x3 cell) median RdNBR-derived % canopy mortality,
-#     landscape (1km radius) proportion high severity (canopy mort > 64%)
-#  Canopy cover (CWHR): local- or landscape scale % low (<25%), % moderate (25-40%), and/or % high (>40%)
-#  Tree size dominance (CWHR): local- or landscape-scale % small (11-24") or % mid-large (>24") dominated forest
-#  Forest type (CWHR): landscape proportion fir-dominated forest (dropped pine-dominated forest due to limited variation)
-#############################################################################################
+####################################################################################################################
+# Purpose: fit models within variable groups for each species to inform screening prior to full model construction #
+####################################################################################################################
+# Content:                                                                                                         #
+#                                                                                                                  #
+# Field-collected variable groups:                                                                                 #
+#  Nest tree variables: Tree species, decay class (intact or decayed snag), DBH (linear or quadratic),             #
+#      top condition (intact, broken before, or broken after)                                                      #
+#  Nest patch variables: Snag density by size class (23-38cm, 38-50cm, >50cm, 23-50cm, >38cm),                     #
+#      Snag density by species (pine, fir)                                                                         #
+#                                                                                                                  #
+# Remotely sensed variable groups:                                                                                 #
+#  Topography: slope, aspect (cosine + sine)                                                                       #
+#  Burn severity (MTBS): local (3x3 cell) median RdNBR-derived % canopy mortality,                                 #
+#     landscape (1km radius) proportion high severity (canopy mort > 64%)                                          #
+#  Canopy cover (CWHR): local- or landscape scale % low (<25%), % moderate (25-40%), and/or % high (>40%)          #
+#  Tree size dominance (CWHR): local- or landscape-scale % small (11-24") or % mid-large (>24") dominated forest   #
+#  Forest type (CWHR): landscape proportion fir-dominated forest (dropped pine-dominated forest due to limited     #
+#     variation)                                                                                                   #
+#                                                                                                                  #
+# Fits models representing all combinations within groups and generates AIC tables for review                      #
+####################################################################################################################
 
 load("Data_compiled.RData")
 
