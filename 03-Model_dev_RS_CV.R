@@ -165,7 +165,7 @@ rm(out, b, bin.end, bin.st, check, coef.est, coef.names, coef.p, coef.sign, end,
    m, maxK, maxSSS, mod, mods.rs, n, obs, obs.bin, p, p.norm, pred.bin, rpi, s, sp,
    st, unitID, w)
 
-## Manually review remaining models, and select models that:
+## Review model lists and save selected model for each species ##
   ## BBWO ##
 write.csv(RSmods.BBWO, "Models_for_review_BBWO.csv", row.names = F)
 # Make sure selected model's coefficients are consistent in direction when any one fire is left out.
