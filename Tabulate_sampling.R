@@ -1,3 +1,7 @@
+##########################################################################
+# Purpose: Tabulate sample sizes for modeling woodpecker nesting habitat #
+##########################################################################
+
 setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
 load("Data_compiled.RData")
 
