@@ -1,9 +1,20 @@
+###################################################################################################
+# Purpose: Initial data compilation for Northern Sierra post-fire woodpecker habitat modeling.    #
+
+# Content:                                                                                        #
+# 1. Imports and merges tree-level and patch-level field-collected data, and remotely sensed data #
+# for nest and random sites.                                                                      #
+# 2. Compiles variables considered for weighted logistic regression habitat models.               #
+# 3. Saves workspace containing resulting data tables                                             #
+###################################################################################################
+
 library(dplyr)
 library(stringr)
 library(foreign)
 
 setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
 
+## Nest tree data ##
 dat <- read.csv("random_and_nest_trees_for_analysis_20170531.csv",
                 header = T, stringsAsFactors = F) %>% tbl_df %>%
   select(SAMPLE_ID, EASTING, NORTHING, YEAR, SPECIES, TYPE, TREATMENT, TREE_SPECIES, DECAY, DBH, TOP) %>%
@@ -30,10 +41,9 @@ dat <- dat %>%
   select(-DECAY) %>%
   select(-TOP)
 
-# Remove duplicates #
-dat <- dat[-which(duplicated(dat$SAMPLE_ID)),]
+dat <- dat[-which(duplicated(dat$SAMPLE_ID)),] # Remove duplicates
 
-# Compile and attach snag density variables
+## Patch (snag density) variables ##
 dat.plot <- read.csv("snag_plots_for_analysis_20170531.csv",
                      header = T, stringsAsFactors = F) %>% tbl_df %>%
   select(SAMPLE_ID, TREE_SPECIES, DECAY, DBH) %>%
@@ -59,7 +69,7 @@ dat <- dat %>% left_join(dat.plot, by = "SAMPLE_ID") %>%
   mutate(SnagDens_fir = replace(SnagDens_fir, which(is.na(SnagDens_fir)), 0))
 rm(dat.plot)
 
-# Attach remotely sensed variables
+## Remotely sensed variables ##
 dat.remote <- read.dbf("E:/GISData/PtBlue_Sierra/NR_points.dbf", as.is = T) %>% tbl_df %>%
   select(SAMPLE_ID, slope:CWHR_NA) %>%
   mutate(blk_lndcc = blk_lndcc*100) %>%
@@ -83,10 +93,6 @@ dat.remote <- read.dbf("E:/GISData/PtBlue_Sierra/NR_points.dbf", as.is = T) %>% 
   mutate(pine_1km = 100*pine_1km)
 dat <- dat %>% left_join(dat.remote, by = "SAMPLE_ID")
 rm(dat.remote)
-
-# Look at data with missing CWHR values (keeping them for now)
-#sum(dat$CWHR_NA)
-dat <- dat %>% select(-CWHR_NA)
 
 # Check sum of remotely sensed tree size variables
 #hist(dat$sizpl_loc + dat$sizsm_loc + dat$sizlrg_loc)
