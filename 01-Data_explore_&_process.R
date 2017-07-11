@@ -1,3 +1,14 @@
+######################################################################################################
+# Purpose: Some data exploration and compilation of species-specific datasets                        #
+######################################################################################################
+# Content:                                                                                           #
+# 1. Scatter plots and correlation coefficients used to screen variables to avoid multi-collinearity #
+# 2. Screen non-nest points for min distance to nest of 130m,                                        #
+# 3. Screen non-nest points centered on live trees to match snag:live ratios for nests               #
+# 4. Scale (z-score) variables to mean = 0, SD = 1                                                   #
+# 5. Compile species-specific datasets and save workspace containing these                           #
+######################################################################################################
+
 setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
 load("Data_compiled0.RData")
 
