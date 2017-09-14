@@ -8,7 +8,16 @@ library(dplyr)
 
 load("Data_compiled.RData")
 
+## Add treatment extent data ##
+trt.data <- read.csv("Treatments_1km_all.csv", header = T, stringsAsFactors = F) %>% tbl_df %>%
+  select(sample_id, perc_area_activity) %>%
+  rename(SAMPLE_ID = sample_id, perc_trt = perc_area_activity) %>%
+  group_by(SAMPLE_ID) %>%
+  summarise(perc_trt = first(perc_trt))
+
 ## Summary for all species ##
+dat <- dat %>% left_join(trt.data, by = "SAMPLE_ID") %>%
+  mutate(perc_trt = replace(perc_trt, is.na(perc_trt), 0))
 tab.sum <- dat %>% 
   mutate(SPECIES = replace(SPECIES, is.na(SPECIES), "RAND")) %>%
   filter(SPECIES %in% c("BBWO", "HAWO", "WHWO", "NOFL", "RBSA", "MOBL", "RAND")) %>%
@@ -60,7 +69,9 @@ tab.sum <- dat %>%
             sizlrg_lnd = paste0(round(mean(sizlrg_lnd), digits = 1), " (",
                                 round(sd(sizlrg_lnd), digits = 1), ")"),
             fir_1km = paste0(round(mean(fir_1km), digits = 1), " (",
-                             round(sd(fir_1km), digits = 1), ")"))
+                             round(sd(fir_1km), digits = 1), ")"),
+            perc_trt = paste0(round(mean(perc_trt), digits = 1), " (",
+                             round(sd(perc_trt), digits = 1), ")"))
 
 ord <- c("RAND", "BBWO", "HAWO", "WHWO", "NOFL", "RBSA", "MOBL") # set desired order
 tab.sum <- tab.sum %>%
@@ -72,6 +83,8 @@ write.csv(tab.sum, "Predictor_summary_stats.csv", row.names = F)
 spp <- c("BBWO", "HAWO", "WHWO", "NOFL", "RBSA", "MOBL")
 for(sp in spp) {
   dta <- eval(as.name(paste0("dat.",sp)))
+  dta <- dta %>% left_join(trt.data, by = "SAMPLE_ID") %>%
+    mutate(perc_trt = replace(perc_trt, is.na(perc_trt), 0))
   vars <- names(dta)[which(names(dta) %in% dimnames(scale.factors)[[1]])]
   for(v in vars) dta[, v] <- dta[, v]*scale.factors[v, "SD"] + scale.factors[v, "mean"]
   if(sp %in% c("BBWO", "HAWO", "WHWO", "NOFL")) {
@@ -123,7 +136,9 @@ for(sp in spp) {
                 sizlrg_lnd = paste0(round(mean(sizlrg_lnd), digits = 1), " (",
                                     round(sd(sizlrg_lnd), digits = 1), ")"),
                 fir_1km = paste0(round(mean(fir_1km), digits = 1), " (",
-                                 round(sd(fir_1km), digits = 1), ")"))
+                                 round(sd(fir_1km), digits = 1), ")"),
+                perc_trt = paste0(round(mean(perc_trt), digits = 1), " (",
+                                  round(sd(perc_trt), digits = 1), ")"))
     
   }
   else{
@@ -170,7 +185,9 @@ for(sp in spp) {
                 sizlrg_lnd = paste0(round(mean(sizlrg_lnd), digits = 1), " (",
                                     round(sd(sizlrg_lnd), digits = 1), ")"),
                 fir_1km = paste0(round(mean(fir_1km), digits = 1), " (",
-                                 round(sd(fir_1km), digits = 1), ")"))
+                                 round(sd(fir_1km), digits = 1), ")"),
+                perc_trt = paste0(round(mean(perc_trt), digits = 1), " (",
+                                  round(sd(perc_trt), digits = 1), ")"))
     
   }
   dta <- dta %>% mutate(TYPE = paste0(sp, "_", TYPE))

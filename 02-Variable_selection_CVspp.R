@@ -73,7 +73,7 @@ for(sp in 1:length(spp)) {
 }
 
 # Tree size #
-vars <- c("sizsm_loc", "sizlrg_loc", "sizlrg_lnd")
+vars <- c("sizsm_loc", "sizsm_lnd", "sizlrg_loc", "sizlrg_lnd")
 Group_label <- "TrSize"
 
 for(sp in 1:length(spp)) {

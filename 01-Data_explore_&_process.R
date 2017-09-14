@@ -19,7 +19,7 @@ library(gcookbook)
 dat <- dat %>%
   select(-grn_lndcc) %>% select(-grn_lnddnb) %>%
   select(-blk_lnddnb) %>%
-  select(-sizpl_loc) %>% select(-sizpl_lnd) %>% select(-sizsm_lnd) %>%
+  select(-sizpl_loc) %>% select(-sizpl_lnd) %>%
   select(-pine_1km)
 
 ## All species scatter plots of remaining variables ##
@@ -45,7 +45,7 @@ nearNestDist <- function(dat) {
 minDist <- 130 # Minimum distance (m) between nest and random points for a given species
 
 ## z-score all continuous predictors and store scaling factors ##
-vars.cont <- names(dat)[c(8, 17:40, 42)]
+vars.cont <- names(dat)[c(8, 17:41, 43)]
 scale.factors <- matrix(NA, nrow = length(vars.cont), ncol = 2,
                         dimnames = list(vars.cont, c("mean", "SD")))
 datz <- dat

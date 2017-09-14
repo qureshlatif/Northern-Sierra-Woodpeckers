@@ -1,7 +1,3 @@
-## Preliminary example file ##
-# Author: Brent Campos
-# ***Not in use***
-
 ##=====================================================================================================================
 ## LOAD NECESSARY PACKAGES
 
