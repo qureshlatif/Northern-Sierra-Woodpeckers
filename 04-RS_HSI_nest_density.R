@@ -19,12 +19,27 @@ spp <- c("BBWO", "HAWO", "WHWO", "NOFL")
 sites <- c("ML", "CB", "CH")
 no.yrs <- 4
 area <- 9 # For manuscript: set area surveyed in units of 100 hectares
+
+transects <- unique(substr(dat$SAMPLE_ID, 1, 4)) # Needed for bootstrapping at transect level
+R <- 5000 # Desired number of bootstrapped samples for calculating Density uncertainty 
 #___________________________________________________________________________________#
 
 #___________ Retrieve data_____________#
 dat.hsi <- read.dbf(NR_points, as.is = T) %>%
   tbl_df() %>%
   select(SAMPLE_ID, inPlot:HSI_NOFL)
+for(sp in spp) {
+  dat.spp <- eval(as.name(paste0("dat.", sp))) %>%
+    left_join(dat.hsi, by = "SAMPLE_ID") %>%
+    filter(Nest == 1) %>%
+    select(SAMPLE_ID:inPlot50, get(paste0("HSI_", sp)))
+  names(dat.spp)[length(dat.spp)] <- "HSI"
+  ifelse(within_50m,
+         dat.spp <- dat.spp %>% filter(inPlot50 == 1),
+         dat.spp <- dat.spp %>% filter(inPlot == 1))
+  assign(paste0("dat.", sp), dat.spp)
+}
+rm(dat.hsi, dat.spp, sp)
 
 dat.grid <- read.dbf(Grid_points, as.is = T) %>%
   tbl_df() # Within 50 m of transects
@@ -44,12 +59,31 @@ if(within_50m) {
 
 # Tabulate values for plotting observed densities for moving window HSI bins #
 for(s in spp) {
-  nests <- getNestHSIs(s, dat.hsi, within_50m)
+  nests <- eval(as.name(paste0("dat.", s)))$HSI
   grid <- getGridHSIs(s, dat.grid)
   assign(paste0("tab.", s),
          calcBinDensities(nests, grid, bins, area, no.yrs))
 }
-rm(s)
+rm(s, nests, grid)
+
+# Tabulate HSI class-specific values $
+thresholds <- list(BBWO = c(0.41, 0.65), HAWO = c(0.51, 0.7),
+                   WHWO = c(0.49, 0.75), NOFL = c(0.44, 0.6))
+for(s in spp) {
+  thrs <- thresholds[[s]]
+  nests <- eval(as.name(paste0("dat.", s)))$HSI
+  grid <- getGridHSIs(s, dat.grid)
+  dat.class <- HSIClassDensities(nests, grid, thrs, area)
+
+  # Add bootstrapped CIs #
+  dat.class$Perc <- (((dat.class$Density %>% rev %>% cumsum %>% rev) / sum(dat.class$Density)) *
+    100) %>% round
+  dat.class <- dat.class %>% HSIClassAddBS(dat.nest = eval(as.name(paste0("dat.", s))) %>%
+                                           filter(Nest == 1),
+                                         dat.grid, transects, thrs, area, R)
+  assign(paste0("dat.class.", s), dat.class)
+}
+rm(thrs, dat.class, nests, grid)
 
 #__________________________________ PLOTTING (manuscript version) ________________________________________#
 ##### BBWO #####
@@ -62,20 +96,19 @@ tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
 # Coordinates for plot labels
-labxy <- rbind(maxSSS = c(x = 0.39, y = 6.7),
-               Low = c(x = 0.2, y = 7.4), 
-               Moderate = c(x = 0.53, y = 7.4),
-               High = c(x = 0.75, y = 7.4),
-               spp = c(x = 0.1, y = 7.9))
+labxy <- rbind(maxSSS = c(x = 0.39, y = 9.7),
+               Low = c(x = 0.2, y = 10.5), 
+               Moderate = c(x = 0.53, y = 10.5),
+               High = c(x = 0.75, y = 10.5),
+               spp = c(x = 0.1, y = 10.8))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -88,20 +121,19 @@ classPntSize <- 5
 tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
-labxy <- rbind(maxSSS = c(x = 0.49, y = 7.7),
-               Low = c(x = 0.3, y = 8.4), 
-               Moderate = c(x = 0.6, y = 8.4),
-               High = c(x = 0.77, y = 8.4),
-               spp = c(x = 0.17, y = 8.9))
+labxy <- rbind(maxSSS = c(x = 0.49, y = 12.7),
+               Low = c(x = 0.3, y = 13.3), 
+               Moderate = c(x = 0.6, y = 13.3),
+               High = c(x = 0.77, y = 13.3),
+               spp = c(x = 0.17, y = 13.6))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -114,20 +146,19 @@ classPntSize <- 5
 tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
-labxy <- rbind(maxSSS = c(x = 0.47, y = 8),
-               Low = c(x = 0.25, y = 9.15), 
-               Moderate = c(x = 0.63, y = 9.15),
-               High = c(x = 0.87, y = 9.15),
-               spp = c(x = 0.13, y = 9.65))
+labxy <- rbind(maxSSS = c(x = 0.47, y = 12.5),
+               Low = c(x = 0.25, y = 13.7), 
+               Moderate = c(x = 0.63, y = 13.7),
+               High = c(x = 0.87, y = 13.7),
+               spp = c(x = 0.13, y = 14))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -140,20 +171,19 @@ classPntSize <- 5
 tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
-labxy <- rbind(maxSSS = c(x = 0.42, y = 10.5),
-               Low = c(x = 0.25, y = 11.3), 
-               Moderate = c(x = 0.52, y = 11.3),
-               High = c(x = 0.75, y = 11.3),
-               spp = c(x = 0.22, y = 11.8))
+labxy <- rbind(maxSSS = c(x = 0.42, y = 16.5),
+               Low = c(x = 0.25, y = 17.5), 
+               Moderate = c(x = 0.52, y = 17.5),
+               High = c(x = 0.75, y = 17.5),
+               spp = c(x = 0.22, y = 18))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -173,10 +203,6 @@ save_plot("manuscript/Figure_HSI_NestDens.tiff", p, ncol = 3.3, nrow = 3.3, dpi 
 
 
 #______________________________ PLOTTING (GIS tool manual version) _______________________________#
-class.densities <- array(NA, dim = c(3, 4, 3)) # Recepticle for class densities for table in GIS application tool manual
-dimnames(class.densities) <- list(NULL, c("no_nests", "area", "Density", "perc"),
-                                  spp[-which(spp == "NOFL")])
-
 ##### BBWO #####
 #___Inputs___#
 s <- "BBWO"
@@ -187,25 +213,25 @@ tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
 # Coordinates for plot labels
-labxy <- rbind(maxSSS = c(x = 0.39, y = 28),
-               Low = c(x = 0.2, y = 29), 
-               Moderate = c(x = 0.53, y = 29),
-               High = c(x = 0.75, y = 29),
-               spp = c(x = 0.1, y = 30))
+labxy <- rbind(maxSSS = c(x = 0.39, y = 9.7 * (1000 / 247.105)),
+               Low = c(x = 0.2, y = 10.5 * (1000 / 247.105)), 
+               Moderate = c(x = 0.53, y = 10.5 * (1000 / 247.105)),
+               High = c(x = 0.75, y = 10.5 * (1000 / 247.105)),
+               spp = c(x = 0.1, y = 10.8 * (1000 / 247.105)))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
 dat.plot$Density <- dat.plot$Density * (1000 / 247.105) # Rescale to nests per 1000 acres
 
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 dat.class$Density <- dat.class$Density * (1000 / 247.105) # Rescale to nests per 1000 acres
+dat.class$Dens95lo <- dat.class$Dens95lo * (1000 / 247.105) # Rescale to nests per 1000 acres
+dat.class$Dens95hi <- dat.class$Dens95hi * (1000 / 247.105) # Rescale to nests per 1000 acres
 
-class.densities[, c("no_nests", "Density"), s] <- dat.class[, c("no_nests", "Density")] %>% as.matrix
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -218,25 +244,25 @@ classPntSize <- 5
 tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
-labxy <- rbind(maxSSS = c(x = 0.49, y = 33),
-               Low = c(x = 0.3, y = 34), 
-               Moderate = c(x = 0.6, y = 34),
-               High = c(x = 0.77, y = 34),
-               spp = c(x = 0.17, y = 35))
+labxy <- rbind(maxSSS = c(x = 0.49, y = 12.7 * (1000 / 247.105)),
+               Low = c(x = 0.3, y = 13.3 * (1000 / 247.105)), 
+               Moderate = c(x = 0.6, y = 13.3 * (1000 / 247.105)),
+               High = c(x = 0.77, y = 13.3 * (1000 / 247.105)),
+               spp = c(x = 0.17, y = 13.6 * (1000 / 247.105)))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
 dat.plot$Density <- dat.plot$Density * (1000 / 247.105) # Rescale to nests per 1000 acres
 
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 dat.class$Density <- dat.class$Density * (1000 / 247.105) # Rescale to nests per 1000 acres
+dat.class$Dens95lo <- dat.class$Dens95lo * (1000 / 247.105) # Rescale to nests per 1000 acres
+dat.class$Dens95hi <- dat.class$Dens95hi * (1000 / 247.105) # Rescale to nests per 1000 acres
 
-class.densities[, c("no_nests", "Density"), s] <- dat.class[, c("no_nests", "Density")] %>% as.matrix
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -249,25 +275,25 @@ classPntSize <- 5
 tickLabSize <- 15
 classLabSize <- 4
 sppLabSize <- 6
-labxy <- rbind(maxSSS = c(x = 0.47, y = 36),
-               Low = c(x = 0.25, y = 37), 
-               Moderate = c(x = 0.63, y = 37),
-               High = c(x = 0.87, y = 37),
-               spp = c(x = 0.13, y = 38))
+labxy <- rbind(maxSSS = c(x = 0.47, y = 12.5 * (1000 / 247.105)),
+               Low = c(x = 0.25, y = 13.7 * (1000 / 247.105)), 
+               Moderate = c(x = 0.63, y = 13.7 * (1000 / 247.105)),
+               High = c(x = 0.87, y = 13.7 * (1000 / 247.105)),
+               spp = c(x = 0.13, y = 14 * (1000 / 247.105)))
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
 dat.plot$Density <- dat.plot$Density * (1000 / 247.105) # Rescale to nests per 1000 acres
 
-nests <- getNestHSIs(s, dat.hsi, within_50m)
-grid <- getGridHSIs(s, dat.grid)
-dat.class <- HSIClassDensities(nests, grid, thresholds, area)
+dat.class <- eval(as.name(paste0("dat.class.", s)))
 dat.class$Density <- dat.class$Density * (1000 / 247.105) # Rescale to nests per 1000 acres
+dat.class$Dens95lo <- dat.class$Dens95lo * (1000 / 247.105) # Rescale to nests per 1000 acres
+dat.class$Dens95hi <- dat.class$Dens95hi * (1000 / 247.105) # Rescale to nests per 1000 acres
 
-class.densities[, c("no_nests", "Density"), s] <- dat.class[, c("no_nests", "Density")] %>% as.matrix
+plt <- plotNestDens(dat.plot, nests = eval(as.name(paste0("dat.", s)))$HSI,
+                    dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
+                    classLabSize, labxy, spp = s, sppLabSize, BS = T)
 
-plt <- plotNestDens(dat.plot, dat.class, thresholds, binPntSize, classPntSize, tickLabSize,
-                    classLabSize, labxy, spp = s, sppLabSize)
 assign(paste0("plt.", s), plt)
 rm(plt)
 
@@ -286,23 +312,64 @@ save_plot("F:/research stuff/FS_PostDoc/Model_application_tool/Figure_NSierra_HS
 #ylab("Density (nests / 100 ha)") + xlab("Habitat suitability index")
 
 #___________________ Tabulate class densities for manual _________________________#
-class.densities[, "Density",] <- round(class.densities[, "Density",], digits = 1)
+class.densities <- array(NA, dim = c(3, 8, 3)) # Recepticle for class densities for table in GIS application tool manual
+dimnames(class.densities) <-
+  list(NULL, c("no_nests", "area", "Density", "Dens95lo", "Dens95hi", "perc", "perc95lo",
+               "perc95hi"), spp[-which(spp == "NOFL")])
+for(s in spp[1:3]) {
+  class.densities[, c("no_nests", "Density", "Dens95lo", "Dens95hi", "perc", "perc95lo",
+                      "perc95hi"), s] <-
+    eval(as.name(paste0("dat.class.", s)))[, c("no_nests", "Density", "Dens95lo", "Dens95hi",
+                                               "Perc", "perc95lo", "perc95hi")] %>%
+    as.matrix
+}
+
+class.densities[, c("Density", "Dens95lo", "Dens95hi"), ] <-
+  round(class.densities[, c("Density", "Dens95lo", "Dens95hi"), ] * (1000/247.105), digits = 1)
 class.densities[, "area",] <- (class.densities[, "no_nests",] / class.densities[, "Density",]) * 1000
 class.densities[, "area",] <- round(class.densities[, "area",], digits = 1)
-class.densities[, "perc",] <-
-  round(t(t(class.densities[, "no_nests",]) / colSums(class.densities[, "no_nests",]))*100)
 
 cols <- c("Species", "Quantity", "low", "moderate", "high")
-tab.dens <- matrix(NA, nrow = 12, ncol = length(cols), dimnames = list(NULL, cols)) %>%
+tab.dens <- matrix(NA, nrow = 24, ncol = length(cols), dimnames = list(NULL, cols)) %>%
   data.frame() %>% tbl_df %>%
   mutate(Species = Species %>% as.character) %>%
   mutate(Quantity = Species %>% as.character) %>%
   mutate_each_(funs(as.numeric(.)), names(.[, sapply(., is.logical)])) %>%
-  mutate(Species = rep(c("BBWO", "HAWO", "WHWO"), each = 4)) %>%
+  mutate(Species = rep(c("BBWO", "HAWO", "WHWO"), each = 8)) %>%
   mutate(Quantity = rep(c("No. nests", "Area surveyed (acres)",
-                          "Density (per 1000 acres)", "Percent of total nests"), 3)) %>%
+                          "Density (per 1000 acres)", "Dens95lo", "Dens95hi", "Sensitivity",
+                          "Sens95lo", "Sens95hi"), 3)) %>%
   mutate(low = class.densities[1,,] %>% as.numeric) %>%
   mutate(moderate = class.densities[2,,] %>% as.numeric) %>%
-  mutate(high = class.densities[3,,] %>% as.numeric)
+  mutate(high = class.densities[3,,] %>% as.numeric) %>%
+  mutate(low = low %>% as.character) %>%
+  mutate(moderate = moderate %>% as.character) %>%
+  mutate(high = high %>% as.character)
+
+for(s in spp) {
+  tab.dens[which(tab.dens$Quantity == "Density (per 1000 acres)" & tab.dens$Species == s),
+                        c("low", "moderate", "high")] <-
+  paste0(tab.dens[which(tab.dens$Quantity == "Density (per 1000 acres)" & tab.dens$Species == s),
+                  c("low", "moderate", "high")],
+         " (",
+         tab.dens[which(tab.dens$Quantity == "Dens95lo" & tab.dens$Species == s),
+                  c("low", "moderate", "high")],
+         ",",
+         tab.dens[which(tab.dens$Quantity == "Dens95hi" & tab.dens$Species == s),
+                  c("low", "moderate", "high")],
+         ")")
+  tab.dens[which(tab.dens$Quantity == "Sensitivity" & tab.dens$Species == s),
+           c("low", "moderate", "high")] <-
+    paste0(tab.dens[which(tab.dens$Quantity == "Sensitivity" & tab.dens$Species == s),
+                    c("low", "moderate", "high")],
+           " (",
+           tab.dens[which(tab.dens$Quantity == "Sens95lo" & tab.dens$Species == s),
+                    c("low", "moderate", "high")],
+           ",",
+           tab.dens[which(tab.dens$Quantity == "Sens95hi" & tab.dens$Species == s),
+                    c("low", "moderate", "high")],
+           ")")
+}
+tab.dens <- tab.dens[-which(tab.dens$Quantity %in% c("Dens95lo", "Dens95hi", "Sens95lo", "Sens95hi")), ]
 
 write.csv(tab.dens, "Class_densities_manual.csv", row.names = F)

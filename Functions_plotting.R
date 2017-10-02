@@ -7,19 +7,6 @@ require(ggplot2)
 require(cowplot)
 require(dplyr)
 
-getNestHSIs <- function(spp, dat.hsi, within_50m = TRUE) {
-  nests <- eval(as.name(paste0("dat.", spp))) %>%
-    left_join(dat.hsi, by = "SAMPLE_ID") %>%
-    filter(Nest == 1)
-  ifelse(within_50m,
-         nests <- nests %>% filter(inPlot50 == 1),
-         nests <- nests %>% filter(inPlot50 == 1))
-  nests <- nests %>% select(eval(as.name(paste0("HSI_", s))))
-  names(nests)[1] <- "HSI"
-  nests <- nests$HSI
-  return(nests)
-}
-
 getGridHSIs <- function(spp, dat.grid) { # dat.grid must contain species-specific HSI fields labeled as "HSI_[spp]"
   grid <- dat.grid %>%
     select(eval(as.name(paste0("HSI_", spp))))
@@ -69,8 +56,8 @@ HSIClassDensities <- function(nestHSIs, gridHSIs, thresholds, area) {
   return(dat.class)
 }
 
-plotNestDens <- function(dat.plot, dat.class, thresholds, binPntSize = 2, classPntSize = 5,
-                         tickLabSize = 15, classLabSize = 5, lab.params, spp, sppLabSize = 8) {
+plotNestDens <- function(dat.plot, nests, dat.class, thresholds, binPntSize = 2, classPntSize = 5,
+                         tickLabSize = 15, classLabSize = 5, lab.params, spp, sppLabSize = 8, BS = F) {
   theme_set(theme_bw())
   plt <- ggplot(dat.plot, aes(HSI.md, Density)) +
     geom_point(size = binPntSize, shape = 1) +
@@ -86,5 +73,34 @@ plotNestDens <- function(dat.plot, dat.class, thresholds, binPntSize = 2, classP
     annotate("text", x = lab.params[3, 1], y = lab.params[3, 2], label = "Moderate", size = classLabSize) +
     annotate("text", x = lab.params[4, 1], y = lab.params[4, 2], label = "High", size = classLabSize) +
     annotate("text", x = lab.params[5, 1], y = lab.params[5, 2], label = spp, size = sppLabSize)
+  if(BS == T) plt <- plt +
+    geom_errorbar(data = dat.class, aes(x = HSI.md, ymin = Dens95lo, ymax = Dens95hi), size = 1, width = 0.05)
   return(plt)
+}
+
+HSIClassAddBS <- function(dat.class, dat.nest, dat.grid, transects, thresholds, area, R) {
+  dens.mat <- perc.mat <- matrix(NA, nrow = nrow(dat.class), ncol = R)
+  for(r in 1:R) {
+    tr <- transects[sample(length(transects), length(transects), replace = T)]
+    ind <- numeric()
+    for(t in 1:length(tr)) ind <- c(ind, which(str_sub(dat.nest$SAMPLE_ID, 1, 4) == tr[t]))
+    n <- dat.nest[ind, "HSI"] %>% as.matrix %>% as.numeric
+    ind <- numeric()
+    for(t in 1:length(tr)) ind <- c(ind, which(dat.grid$Transect == tr[t]))
+    g <- getGridHSIs(s, dat.grid[ind, ] %>% filter(Transect %in% tr))
+    dc <- HSIClassDensities(n, g, thresholds, area)
+    dens.mat[, r] <- dc$Density
+    perc.mat[, r] <- ((rev(cumsum(rev(dc$Density))) / sum(dc$Density))*100) %>% round
+  }
+  dat.class <- cbind(dat.class,
+                     Dens95lo =
+                       apply(dens.mat, 1, function(x) quantile(x, prob = 0.025, type = 8)),
+                     Dens95hi =
+                       apply(dens.mat, 1, function(x) quantile(x, prob = 0.975, type = 8)),
+                     perc95lo =
+                       apply(perc.mat, 1, function(x) quantile(x, prob = 0.025, type = 8)),
+                     perc95hi = 
+                       apply(perc.mat, 1, function(x) quantile(x, prob = 0.975, type = 8))
+                     )
+  return(dat.class)
 }
