@@ -76,7 +76,7 @@ for(s in spp) {
   dat.class <- HSIClassDensities(nests, grid, thrs, area)
 
   # Add bootstrapped CIs #
-  dat.class$Perc <- (((dat.class$Density %>% rev %>% cumsum %>% rev) / sum(dat.class$Density)) *
+  dat.class$Perc <- (((dat.class$Density) / sum(dat.class$Density)) *
     100) %>% round
   dat.class <- dat.class %>% HSIClassAddBS(dat.nest = eval(as.name(paste0("dat.", s))) %>%
                                            filter(Nest == 1),
@@ -337,8 +337,8 @@ tab.dens <- matrix(NA, nrow = 24, ncol = length(cols), dimnames = list(NULL, col
   mutate_each_(funs(as.numeric(.)), names(.[, sapply(., is.logical)])) %>%
   mutate(Species = rep(c("BBWO", "HAWO", "WHWO"), each = 8)) %>%
   mutate(Quantity = rep(c("No. nests", "Area surveyed (acres)",
-                          "Density (per 1000 acres)", "Dens95lo", "Dens95hi", "Sensitivity",
-                          "Sens95lo", "Sens95hi"), 3)) %>%
+                          "Density (per 1000 acres)", "Dens95lo", "Dens95hi", "PercNest",
+                          "Perc95lo", "Perc95hi"), 3)) %>%
   mutate(low = class.densities[1,,] %>% as.numeric) %>%
   mutate(moderate = class.densities[2,,] %>% as.numeric) %>%
   mutate(high = class.densities[3,,] %>% as.numeric) %>%
@@ -358,18 +358,18 @@ for(s in spp) {
          tab.dens[which(tab.dens$Quantity == "Dens95hi" & tab.dens$Species == s),
                   c("low", "moderate", "high")],
          ")")
-  tab.dens[which(tab.dens$Quantity == "Sensitivity" & tab.dens$Species == s),
+  tab.dens[which(tab.dens$Quantity == "PercNest" & tab.dens$Species == s),
            c("low", "moderate", "high")] <-
-    paste0(tab.dens[which(tab.dens$Quantity == "Sensitivity" & tab.dens$Species == s),
+    paste0(tab.dens[which(tab.dens$Quantity == "PercNest" & tab.dens$Species == s),
                     c("low", "moderate", "high")],
            " (",
-           tab.dens[which(tab.dens$Quantity == "Sens95lo" & tab.dens$Species == s),
+           tab.dens[which(tab.dens$Quantity == "Perc95lo" & tab.dens$Species == s),
                     c("low", "moderate", "high")],
            ",",
-           tab.dens[which(tab.dens$Quantity == "Sens95hi" & tab.dens$Species == s),
+           tab.dens[which(tab.dens$Quantity == "Perc95hi" & tab.dens$Species == s),
                     c("low", "moderate", "high")],
            ")")
 }
-tab.dens <- tab.dens[-which(tab.dens$Quantity %in% c("Dens95lo", "Dens95hi", "Sens95lo", "Sens95hi")), ]
+tab.dens <- tab.dens[-which(tab.dens$Quantity %in% c("Dens95lo", "Dens95hi", "Perc95lo", "Perc95hi")), ]
 
 write.csv(tab.dens, "Class_densities_manual.csv", row.names = F)

@@ -90,7 +90,7 @@ HSIClassAddBS <- function(dat.class, dat.nest, dat.grid, transects, thresholds, 
     g <- getGridHSIs(s, dat.grid[ind, ] %>% filter(Transect %in% tr))
     dc <- HSIClassDensities(n, g, thresholds, area)
     dens.mat[, r] <- dc$Density
-    perc.mat[, r] <- ((rev(cumsum(rev(dc$Density))) / sum(dc$Density))*100) %>% round
+    perc.mat[, r] <- (((dc$Density) / sum(dc$Density))*100) %>% round
   }
   dat.class <- cbind(dat.class,
                      Dens95lo =
