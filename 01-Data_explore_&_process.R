@@ -32,7 +32,7 @@ dat <- dat %>%
 #rm(FCdat, RSdat)
 
 # Correlation matrix (all species)
-#write.csv(cor(dat[,-c(1:7, 37:38)], use = "complete.obs"), "CorMat_predictors.csv")
+#write.csv(cor(dat %>% select(DBH:fir_1km), use = "complete.obs"), "CorMat_predictors.csv")
 
 ## Function for finding nearest nest distance for random points ##
 library(flexclust)
@@ -45,7 +45,11 @@ nearNestDist <- function(dat) {
 minDist <- 130 # Minimum distance (m) between nest and random points for a given species
 
 ## z-score all continuous predictors and store scaling factors ##
-vars.cont <- names(dat)[c(8, 17:41, 43)]
+vars.cont <- names(dat)[-which(names(dat) %in%
+                                 c("SAMPLE_ID","EASTING","NORTHING","YEAR",
+                                   "SPECIES","TYPE","TREATMENT","SP_FIR",
+                                   "SP_PINE","SNAG","SNAG_INT","SNAG_DEC",
+                                   "BRKN_before","BRKN_after","BRKN","Site"))]
 scale.factors <- matrix(NA, nrow = length(vars.cont), ncol = 2,
                         dimnames = list(vars.cont, c("mean", "SD")))
 datz <- dat

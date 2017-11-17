@@ -13,7 +13,7 @@ library(PresenceAbsence)
 library(stringr)
 
 ### Load functions ###
-source("scripts/Functions.R")
+source("Northern-Sierra-Woodpeckers/Functions.R")
 
 # Species with sufficient sample sizes for cross-fire validation #
 sites <- c("CB", "ML", "CH")
@@ -41,7 +41,7 @@ bin.width <- list(BBWO = c(3, 3, 3), HAWO = c(3, 3, 4), WHWO = c(3, 3, 4),
 sprmn.crit <- 0.564 # Critical value at alpha = 0.05 for Spearman correlation at n = 10
 
 # Remote-sensed variables only #
-vars.rs <- names(dat.BBWO)[c(25:28, 30, 35:41)] # For canopy mortality severity metrics
+vars.rs <- names(dat.BBWO)[c(25:28, 30, 35:43)] # For canopy mortality severity metrics
 
 # Fit models and calculate evaluation metrics
 RSmods <- AllFit(spp, sites, vars = vars.rs)
@@ -50,9 +50,9 @@ RSmods <- AllFit(spp, sites, vars = vars.rs)
 
 ## Save model output tables for each species ##
 write.csv(RSmods$BBWO, "Models_for_review_BBWO.csv", row.names = F)
-write.csv(RSmods.HAWO, "Models_for_review_HAWO.csv", row.names = F)
-write.csv(RSmods.HAWO, "Models_for_review_WHWO.csv", row.names = F)
-write.csv(RSmods.HAWO, "Models_for_review_NOFL.csv", row.names = F)
+write.csv(RSmods$HAWO, "Models_for_review_HAWO.csv", row.names = F)
+write.csv(RSmods$WHWO, "Models_for_review_WHWO.csv", row.names = F)
+write.csv(RSmods$NOFL, "Models_for_review_NOFL.csv", row.names = F)
 
 # For each species, make sure selected model's coefficients are consistent in direction across folds.
 #dat.fold <- dat.BBWO[which(dat.BBWO$Site!=sites[3]),]

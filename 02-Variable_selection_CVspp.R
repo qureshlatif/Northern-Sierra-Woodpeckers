@@ -33,7 +33,7 @@ library(stringr)
 sites <- unique(dat.BBWO$Site)
 
 ### Load functions ###
-source("scripts/Functions.R")
+source("Northern-Sierra-Woodpeckers/Functions.R")
 
 spp <- c("BBWO", "HAWO", "WHWO", "NOFL", "RBSA", "MOBL")
 
@@ -62,7 +62,8 @@ for(sp in 1:length(spp)) {
 }
 
 # Canopy cover #
-vars <- c("canlo_loc", "canlo_lnd", "canmd_loc", "canmd_lnd", "canhi_loc", "canhi_lnd")
+vars <- c("canlo_loc", "canlo_lnd", "canmd_loc", "canmd_lnd",
+          "canhi_loc", "canhi_lnd", "can60_loc", "can60_lnd")
 Group_label <- "CCov"
 
 for(sp in 1:length(spp)) {

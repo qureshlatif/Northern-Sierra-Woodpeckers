@@ -71,7 +71,7 @@ rm(dat.plot)
 
 ## Remotely sensed variables ##
 dat.remote <- read.dbf("E:/GISData/PtBlue_Sierra/NR_points.dbf", as.is = T) %>% tbl_df %>%
-  select(SAMPLE_ID, slope:pine_1km) %>%
+  select(SAMPLE_ID, slope:canhi_lnd, can60_loc, can60_lnd, sizpl_loc:pine_1km) %>%
   mutate(blk_lndcc = blk_lndcc*100) %>%
   mutate(blk_lnddnb = blk_lnddnb*100) %>%
   mutate(grn_lndcc = grn_lndcc*100) %>%
@@ -99,7 +99,7 @@ rm(dat.remote)
 #hist(dat$sizpl_lnd + dat$sizsm_lnd + dat$sizlrg_lnd)
 
 # Correlation matrix (all species)
-# write.csv(cor(dat[,-c(1:5)], use = "complete.obs"), "CorMat_predictors.csv")
+# write.csv(cor(dat[,-c(1:7)] %>% as.matrix, use = "complete.obs"), "CorMat_predictors.csv")
 
 # Add time since fire #
 dat <- dat %>%

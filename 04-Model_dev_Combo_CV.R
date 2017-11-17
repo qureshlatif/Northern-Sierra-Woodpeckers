@@ -14,7 +14,7 @@ library(stringr)
 sites <- unique(dat.BBWO$Site)
 
 ### Load functions ###
-source("scripts/Functions.R")
+source("Northern-Sierra-Woodpeckers/Functions.R")
 
 # Species with sufficient sample sizes for cross-fire validation #
 sites <- c("CB", "ML", "CH")

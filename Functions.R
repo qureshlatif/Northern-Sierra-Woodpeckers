@@ -57,6 +57,9 @@ model.construct <- function(vars, maxK) { # vars = vector of variable names
            any(v == "SnagDens_all")))
       if(!(any(v == "canhi_loc") & (any(v == "canmd_loc") | any(v == "canlo_loc"))))
       if(!(any(v == "canhi_lnd") & (any(v == "canmd_lnd") | any(v == "canlo_lnd"))))
+      if(!(any(v == "canmd_lnd") & (any(v == "can60_loc") | any(v == "can60_lnd"))))
+      if(!(any(v == "canhi_loc") & (any(v == "can60_loc"))))
+      if(!(any(v == "canhi_lnd") & (any(v == "can60_lnd"))))
       if(!(any(v == "sizlrg_loc") & any(v == "sizsm_loc"))) 
       if(!(any(v == "sizlrg_lnd") & any(v == "sizsm_lnd"))) 
       if(!(any(v == "cosasp") & (!any(v == "sinasp"))) &
