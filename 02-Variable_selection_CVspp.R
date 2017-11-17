@@ -33,7 +33,7 @@ library(stringr)
 sites <- unique(dat.BBWO$Site)
 
 ### Load functions ###
-source("scripts/Functions.R")
+source("Northern-Sierra-Woodpeckers/Functions.R")
 
 spp <- c("BBWO", "HAWO", "WHWO", "NOFL", "RBSA", "MOBL")
 
