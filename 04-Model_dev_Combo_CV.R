@@ -45,7 +45,7 @@ sprmn.crit <- 0.564 # Critical value at alpha = 0.05 for Spearman correlation at
 vars.rs <- list(BBWO = c("ccmort_loc", "blk_lndcc", "canhi_loc"),
                 HAWO = c("ccmort_loc", "canhi_lnd", "sizlrg_loc"),
                 WHWO = c("ccmort_loc", "blk_lndcc"),
-                NOFL = c("slope", "ccmort_loc", "sizlrg_loc"))
+                NOFL = c("slope", "ccmort_loc", "sizlrg_loc", "sizlrg_lnd"))
 vars.fc <- list(BBWO = c("DBH", "DBH + I(DBH^2)", "SnagDens_23to50"),
                 HAWO = c("DBH", "DBH + I(DBH^2)", "SP_PINE", "BRKN",
                          "SnagDens_all", "SP_PINE + TimSincFire + I(SP_PINE*TimSincFire)"),
@@ -63,9 +63,9 @@ CMBmods <- AllFit(spp, sites, vars = vars)
 
 ## Save model output tables for each species ##
 write.csv(CMBmods$BBWO, "Models_for_review_BBWO.csv", row.names = F)
-write.csv(CMBmods.HAWO, "Models_for_review_HAWO.csv", row.names = F)
-write.csv(CMBmods.HAWO, "Models_for_review_WHWO.csv", row.names = F)
-write.csv(CMBmods.HAWO, "Models_for_review_NOFL.csv", row.names = F)
+write.csv(CMBmods$HAWO, "Models_for_review_HAWO.csv", row.names = F)
+write.csv(CMBmods$WHWO, "Models_for_review_WHWO.csv", row.names = F)
+write.csv(CMBmods$NOFL, "Models_for_review_NOFL.csv", row.names = F)
 
 # For each species, make sure selected model's coefficients are consistent in direction across folds.
 #dat.fold <- dat.BBWO[which(dat.BBWO$Site!=sites[3]),]
@@ -74,12 +74,11 @@ write.csv(CMBmods.HAWO, "Models_for_review_NOFL.csv", row.names = F)
 #rm(dat.fold)
 
 # Save selected models #
-mod <- WLR_fit(dat.BBWO, formula = Nest ~ ccmort_loc + blk_lndcc + canhi_loc + DBH + I(DBH^2) + SnagDens_23to50)
+mod <- WLR_fit(dat.BBWO, formula = Nest ~ ccmort_loc + blk_lndcc + DBH + I(DBH^2) + SnagDens_23to50)
 saveObject(mod, "Model_CMB_BBWO") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_CMB_BBWO.csv")
 
-mod <- WLR_fit(dat.HAWO, formula = Nest ~ ccmort_loc + canhi_lnd + sizlrg_loc + BRKN +
-                 SnagDens_all + SP_PINE + TimSincFire + I(SP_PINE*TimSincFire))
+mod <- WLR_fit(dat.HAWO, formula = Nest ~ ccmort_loc + sizlrg_loc + DBH + BRKN)
 saveObject(mod, "Model_CMB_HAWO") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_CMB_HAWO.csv")
 
@@ -87,7 +86,7 @@ mod <- WLR_fit(dat.WHWO, formula = Nest ~ ccmort_loc + blk_lndcc + DBH + I(DBH^2
 saveObject(mod, "Model_CMB_WHWO") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_CMB_WHWO.csv")
 
-mod <- WLR_fit(dat.NOFL, formula = Nest ~ slope + DBH + I(DBH^2) + BRKN)
+mod <- WLR_fit(dat.NOFL, formula = Nest ~ DBH + I(DBH^2) + BRKN)
 saveObject(mod, "Model_CMB_NOFL") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_CMB_NOFL.csv")
 

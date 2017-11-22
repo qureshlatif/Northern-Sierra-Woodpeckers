@@ -226,8 +226,10 @@ AllFit <- function(spp, sites, vars , dat = datList(spp)) { # dat = list of data
       v.ind <- str_detect(fixed(out$model[i]), fixed(coefs))
       names(v.ind) <- coefs
       if(any(names(v.ind) == "I(DBH^2)")) if(v.ind["I(DBH^2)"] == T) v.ind["DBH"] <- F
-      if(any(names(v.ind) == "I(SP_PINE*TimSincFire)")) if(v.ind["I(SP_PINE*TimSincFire)"] == T)
-        v.ind["SP_PINE"] <- v.ind["TimSincFire"] <- F
+      if(any(names(v.ind) == "SP_PINE + TimSincFire + I(SP_PINE*TimSincFire)")) {
+        if(as.logical(v.ind["SP_PINE + TimSincFire + I(SP_PINE*TimSincFire)"]))
+          v.ind["SP_PINE"] <- F
+      }
       
       # Trim check of statistical significance to required parameters
       #(e.g., highest order terms in the presence of quadratics or interactions)

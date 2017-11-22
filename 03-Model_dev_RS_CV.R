@@ -50,9 +50,9 @@ RSmods <- AllFit(spp, sites, vars = vars.rs)
 
 ## Save model output tables for each species ##
 write.csv(RSmods$BBWO, "Models_for_review_BBWO.csv", row.names = F)
-write.csv(RSmods.HAWO, "Models_for_review_HAWO.csv", row.names = F)
-write.csv(RSmods.HAWO, "Models_for_review_WHWO.csv", row.names = F)
-write.csv(RSmods.HAWO, "Models_for_review_NOFL.csv", row.names = F)
+write.csv(RSmods$HAWO, "Models_for_review_HAWO.csv", row.names = F)
+write.csv(RSmods$WHWO, "Models_for_review_WHWO.csv", row.names = F)
+write.csv(RSmods$NOFL, "Models_for_review_NOFL.csv", row.names = F)
 
 # For each species, make sure selected model's coefficients are consistent in direction across folds.
 #dat.fold <- dat.BBWO[which(dat.BBWO$Site!=sites[3]),]
@@ -73,7 +73,7 @@ mod <- WLR_fit(dat.WHWO, formula = Nest ~ ccmort_loc + blk_lndcc)
 saveObject(mod, "Model_RS_WHWO") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_RS_WHWO.csv")
 
-mod <- WLR_fit(dat.NOFL, formula = Nest ~ slope + ccmort_loc + sizlrg_loc)
+mod <- WLR_fit(dat.NOFL, formula = Nest ~ slope + ccmort_loc + sizlrg_loc + sizlrg_lnd)
 saveObject(mod, "Model_RS_NOFL") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_RS_NOFL.csv")
 
