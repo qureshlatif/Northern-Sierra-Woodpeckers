@@ -9,7 +9,7 @@ require(dplyr)
 
 getGridHSIs <- function(spp, dat.grid) { # dat.grid must contain species-specific HSI fields labeled as "HSI_[spp]"
   grid <- dat.grid %>%
-    select(eval(as.name(paste0("HSI_", spp))))
+    select(matches(paste0("HSI_", spp)))
   names(grid)[1] <- "HSI"
   grid <- grid$HSI
   return(grid)
@@ -60,8 +60,8 @@ plotNestDens <- function(dat.plot, nests, dat.class, thresholds, binPntSize = 2,
                          tickLabSize = 15, classLabSize = 5, lab.params, spp, sppLabSize = 8, BS = F) {
   theme_set(theme_bw())
   plt <- ggplot(dat.plot, aes(HSI.md, Density)) +
-    geom_point(size = binPntSize, shape = 1) +
-    geom_point(data = dat.class, aes(x = HSI.md, y = Density), size = classPntSize, shape = 16) +
+    geom_point(size = binPntSize, shape = 16) +
+    geom_point(data = dat.class, aes(x = HSI.md, y = Density), size = classPntSize, shape = 1, stroke = 1.5) +
     geom_rug(data = data.frame(nests), aes(x = nests, y = NULL), colour = "black", alpha = 0.3, size = 1) +
     geom_vline(xintercept = thresholds[1], linetype = "dashed") +
     geom_vline(xintercept = thresholds[2], linetype = "dashed") +
@@ -79,15 +79,22 @@ plotNestDens <- function(dat.plot, nests, dat.class, thresholds, binPntSize = 2,
 }
 
 HSIClassAddBS <- function(dat.class, dat.nest, dat.grid, transects, thresholds, area, R) {
+  dat.nest <- dat.nest %>% mutate(Transect = str_sub(SAMPLE_ID, 1, 4))
   dens.mat <- perc.mat <- matrix(NA, nrow = nrow(dat.class), ncol = R)
+  list.nest <- list.grid <- list()
+  for(t in 1:length(transects)) {
+    ind <- which(dat.nest[, "Transect"] == transects[t])
+    list.nest[[length(list.nest) + 1]] <- dat.nest[ind, ]
+    ind <- which(dat.grid[, "Transect"] == transects[t])
+    list.grid[[length(list.grid) + 1]] <- dat.grid[ind, ]
+  }
+  names(list.nest) <- names(list.grid) <- transects
   for(r in 1:R) {
     tr <- transects[sample(length(transects), length(transects), replace = T)]
-    ind <- numeric()
-    for(t in 1:length(tr)) ind <- c(ind, which(str_sub(dat.nest$SAMPLE_ID, 1, 4) == tr[t]))
-    n <- dat.nest[ind, "HSI"] %>% as.matrix %>% as.numeric
-    ind <- numeric()
-    for(t in 1:length(tr)) ind <- c(ind, which(dat.grid$Transect == tr[t]))
-    g <- getGridHSIs(s, dat.grid[ind, ] %>% filter(Transect %in% tr))
+    n <- do.call("rbind", list.nest[tr])
+    n <- n[, "HSI"] %>% as.matrix %>% as.numeric
+    g <- do.call("rbind", list.grid[tr])
+    g <- g[, "HSI"] %>% as.matrix %>% as.numeric
     dc <- HSIClassDensities(n, g, thresholds, area)
     dens.mat[, r] <- dc$Density
     perc.mat[, r] <- (((dc$Density) / sum(dc$Density))*100) %>% round

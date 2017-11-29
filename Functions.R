@@ -82,7 +82,7 @@ SnsPlsSpcMax <- function(Obs, HSI) {        # Function for finding threshold tha
   SPS_th <- HSI.cnds[which(Sum==max(Sum))]
   SPS_sns <- sens[which(Sum==max(Sum))]
   SPS_spc <- spcf[which(Sum==max(Sum))]
-  MSPS<-list(SPS_th,SPS_sns,SPS_spc)
+  MSPS<-list(SPS_th[1],SPS_sns[1],SPS_spc[1]) # Given multiple maxSSS thresholds, keep lowest one.
   names(MSPS)<-c("HSI_thrshld","sensitivity_at_SPS","specificity_at_SPS")
   return(MSPS)
 }
