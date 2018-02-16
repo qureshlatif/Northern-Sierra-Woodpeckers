@@ -64,7 +64,6 @@ rm(s, nests, grid)
 dat.class.BBWO <- read.csv("Plot_cache_RS_BBWO_class.csv", header = T)
 dat.class.HAWO <- read.csv("Plot_cache_RS_HAWO_class.csv", header = T)
 dat.class.WHWO <- read.csv("Plot_cache_RS_WHWO_class.csv", header = T)
-dat.class.NOFL <- read.csv("Plot_cache_RS_NOFL_class.csv", header = T)
 
 #______________________________ PLOTTING (GIS tool manual version) _______________________________#
 ##### BBWO #####
@@ -189,8 +188,8 @@ p <- ggdraw() +
   draw_plot(plt.BBWO, x = 0.05, y = 0.525, width = 0.475, height = 0.475) +
   draw_plot(plt.HAWO, x = 0.525, y = 0.525, width = 0.475, height = 0.475) +
   draw_plot(plt.WHWO, x = 0.05, y = 0.05, width = 0.475, height = 0.475) +
-  draw_plot_label(label = c("Density (nests per 1000 ac)", "Habitat Suitability Index (HSI)"),
-                  size=c(30, 30), x=c(0.01, 0.15), y=c(0.2, 0.05), angle = c(90, 0))
+  draw_plot_label(label = c("Observed density (nests per 1000 ac)", "Habitat Suitability Index (HSI)"),
+                  size=c(30, 30), x=c(0.01, 0.15), y=c(0, 0.05), angle = c(90, 0))
 #p
 
 save_plot("F:/research stuff/FS_PostDoc/Model_application_tool/Figure_NSierra_HSIDens.tiff", p, ncol = 3.3, nrow = 3.3, dpi = 100)
