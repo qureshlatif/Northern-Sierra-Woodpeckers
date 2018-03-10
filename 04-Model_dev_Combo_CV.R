@@ -74,7 +74,7 @@ write.csv(CMBmods$NOFL, "Models_for_review_NOFL.csv", row.names = F)
 #rm(dat.fold)
 
 # Save selected models #
-mod <- WLR_fit(dat.BBWO, formula = Nest ~ ccmort_loc + blk_lndcc + DBH + I(DBH^2) + SnagDens_23to50)
+mod <- WLR_fit(dat.BBWO, formula = Nest ~ ccmort_loc + blk_lndcc + DBH + I(DBH^2))
 saveObject(mod, "Model_CMB_BBWO") # Save selected model #
 write.csv(summary(mod)$coefficients, "Model_CMB_BBWO.csv")
 

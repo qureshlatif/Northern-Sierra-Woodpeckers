@@ -18,7 +18,7 @@ Grid_points <- "E:/GISData/PtBlue_Sierra/Trns50m_30m_grid.dbf" # Contains all 30
 
 spp <- c("BBWO", "HAWO", "WHWO", "NOFL")
 sites <- c("ML", "CB", "CH")
-area <- 9 * 4 #Area surveyed in 100 ha units X study duration.
+area <- 9 * 4 #Area surveyed in units of 100 ha X study duration.
 
 transects <- unique(substr(dat$SAMPLE_ID, 1, 4)) # Needed for bootstrapping at transect level
 R <- 5000 # Desired number of bootstrapped samples for calculating Density uncertainty 

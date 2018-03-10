@@ -83,6 +83,66 @@ tab.sum <- tab.sum %>%
 
 write.csv(tab.sum, "Predictor_summary_stats.csv", row.names = F)
 
+## Summary by location ##
+tab.sum <- dat %>% filter(TYPE == "RAND") %>% 
+  group_by(Site) %>%
+  summarise(DBH = paste0(round(mean(DBH), digits = 1), " (", round(sd(DBH), digits = 1), ")"),
+            SP_FIR = round(sum(SP_FIR)/n(), digits = 2),
+            SP_PINE = round(sum(SP_PINE)/n(), digits = 2),
+            SNAG = round(sum(SNAG)/n(), digits = 2),
+            SNAG_INT = round(sum(SNAG_INT)/n(), digits = 2),
+            SNAG_DEC = round(sum(SNAG_DEC)/n(), digits = 2),
+            BRKN_before = round(sum(BRKN_before)/n(), digits = 2),
+            BRKN_after = round(sum(BRKN_after)/n(), digits = 2),
+            BRKN = round(sum(BRKN)/n(), digits = 2),
+            SnagDens_23to50 = paste0(round(mean(SnagDens_23to50), digits = 1), " (",
+                                     round(sd(SnagDens_23to50), digits = 1), ")"),
+            SnagDens_23to38 = paste0(round(mean(SnagDens_23to38), digits = 1), " (",
+                                     round(sd(SnagDens_23to38), digits = 1), ")"),
+            SnagDens_38to50 = paste0(round(mean(SnagDens_38to50), digits = 1), " (",
+                                     round(sd(SnagDens_38to50), digits = 1), ")"),
+            SnagDens_gt50 = paste0(round(mean(SnagDens_gt50), digits = 1), " (",
+                                   round(sd(SnagDens_gt50), digits = 1), ")"),
+            SnagDens_pine = paste0(round(mean(SnagDens_pine), digits = 1), " (",
+                                   round(sd(SnagDens_pine), digits = 1), ")"),
+            SnagDens_fir = paste0(round(mean(SnagDens_fir), digits = 1), " (",
+                                  round(sd(SnagDens_fir), digits = 1), ")"),
+            SnagDens_all = paste0(round(mean(SnagDens_all), digits = 1), " (",
+                                  round(sd(SnagDens_all), digits = 1), ")"),
+            slope = paste0(round(mean(slope), digits = 1), " (", round(sd(slope), digits = 1), ")"),
+            sinasp = paste0(round(mean(sinasp), digits = 1), " (", round(sd(sinasp), digits = 1), ")"),
+            cosasp = paste0(round(mean(cosasp), digits = 1), " (", round(sd(cosasp), digits = 1), ")"),
+            ccmort_loc = paste0(round(mean(ccmort_loc), digits = 1), " (",
+                                round(sd(ccmort_loc), digits = 1), ")"),
+            blk_lndcc = paste0(round(mean(blk_lndcc), digits = 1), " (",
+                               round(sd(blk_lndcc), digits = 1), ")"),
+            canlo_loc = paste0(round(mean(canlo_loc), digits = 1), " (",
+                               round(sd(canlo_loc), digits = 1), ")"),
+            canlo_lnd = paste0(round(mean(canlo_lnd), digits = 1), " (",
+                               round(sd(canlo_lnd), digits = 1), ")"),
+            canmd_loc = paste0(round(mean(canmd_loc), digits = 1), " (",
+                               round(sd(canmd_loc), digits = 1), ")"),
+            canmd_lnd = paste0(round(mean(canmd_lnd), digits = 1), " (",
+                               round(sd(canmd_lnd), digits = 1), ")"),
+            canhi_loc = paste0(round(mean(canhi_loc), digits = 1), " (",
+                               round(sd(canhi_loc), digits = 1), ")"),
+            canhi_lnd = paste0(round(mean(canhi_lnd), digits = 1), " (",
+                               round(sd(canhi_lnd), digits = 1), ")"),
+            sizsm_loc = paste0(round(mean(sizsm_loc), digits = 1), " (",
+                               round(sd(sizsm_loc), digits = 1), ")"),
+            sizsm_lnd = paste0(round(mean(sizsm_lnd), digits = 1), " (",
+                               round(sd(sizsm_lnd), digits = 1), ")"),
+            sizlrg_loc = paste0(round(mean(sizlrg_loc), digits = 1), " (",
+                                round(sd(sizlrg_loc), digits = 1), ")"),
+            sizlrg_lnd = paste0(round(mean(sizlrg_lnd), digits = 1), " (",
+                                round(sd(sizlrg_lnd), digits = 1), ")"),
+            fir_1km = paste0(round(mean(fir_1km), digits = 1), " (",
+                             round(sd(fir_1km), digits = 1), ")"),
+            perc_trt = paste0(round(mean(perc_trt), digits = 1), " (",
+                              round(sd(perc_trt), digits = 1), ")"))
+
+write.csv(tab.sum, "Predictor_summary_stats_location.csv", row.names = F)
+
 ## Summaries by species ##
 spp <- c("BBWO", "HAWO", "WHWO", "NOFL", "RBSA", "MOBL")
 for(sp in spp) {
