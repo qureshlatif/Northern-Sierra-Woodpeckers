@@ -85,19 +85,19 @@ for(s in spp) {
 }
 rm(s, nests, grid)
 
-#for(s in spp) {
-#  thrs <- thresholds[[s]]
-#  nests <- eval(as.name(paste0("nest.", s)))$HSI
-#  datg <- dat.grid %>% mutate(HSI = eval(as.name(paste0("HSI_", s))))
-#  grid <- datg$HSI
-#  dat.class <- calcClassDensities(nests, grid, thrs, area)
+for(s in spp) {
+  thrs <- thresholds[[s]]
+  nests <- eval(as.name(paste0("nest.", s)))$HSI
+  datg <- dat.grid %>% mutate(HSI = eval(as.name(paste0("HSI_", s))))
+  grid <- datg$HSI
+  dat.class <- calcClassDensities(nests, grid, thrs, area)
 
-#  # Add bootstrapped CIs #
-#  dat.class <- dat.class %>% HSIClassDensityBS(dat.sample = eval(as.name(paste0("nest.", s))),
-#                                         datg, transects, thrs, area, R, UnitID = "Transect")
-#  assign(paste0("dat.class.", s), dat.class)
-#}
-#rm(thrs, dat.class, nests, grid, datg)
+  # Add bootstrapped CIs #
+  dat.class <- dat.class %>% HSIClassDensityBS(dat.sample = eval(as.name(paste0("nest.", s))),
+                                         datg, transects, thrs, area, R, UnitID = "Transect")
+  assign(paste0("dat.class.", s), dat.class)
+}
+rm(thrs, dat.class, nests, grid, datg)
 
 # Cache and retrieve #
 #write.csv(dat.class.BBWO, "Plot_cache_CMB_BBWO_class.csv", row.names = F)

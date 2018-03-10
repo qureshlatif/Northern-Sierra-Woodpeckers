@@ -35,6 +35,8 @@ for(i in 1:length(covs)) {
   plt <- ggplot(dat.plot, aes(x, HSI)) +
     geom_line(size = 3) +
     ylim(0,1) +
+    geom_hline(yintercept = 0.35, linetype = "dotted", size = 1) +
+    geom_hline(yintercept = 0.65, linetype = "dotted", size = 1) +
     ylab(NULL) + xlab(cov.names[i]) +
     theme(axis.text.x=element_text(size=15)) +
     theme(axis.text.y=element_text(size=15)) +
@@ -74,6 +76,8 @@ for(i in 1:length(covs)) {
   plt <- ggplot(dat.plot, aes(x, HSI)) +
     geom_line(size = 3) +
     ylim(0,1) +
+    geom_hline(yintercept = 0.25, linetype = "dotted", size = 1) +
+    geom_hline(yintercept = 0.51, linetype = "dotted", size = 1) +
     ylab(NULL) + xlab(cov.names[i]) +
     theme(axis.text.x=element_text(size=15)) +
     theme(axis.text.y=element_text(size=15)) +
@@ -113,6 +117,8 @@ for(i in 1:length(covs)) {
   plt <- ggplot(dat.plot, aes(x, HSI)) +
     geom_line(size = 3) +
     ylim(0,1) +
+    geom_hline(yintercept = 0.4, linetype = "dotted", size = 1) +
+    geom_hline(yintercept = 0.7, linetype = "dotted", size = 1) +
     ylab(NULL) + xlab(cov.names[i]) +
     theme(axis.text.x=element_text(size=15)) +
     theme(axis.text.y=element_text(size=15)) +
@@ -151,6 +157,8 @@ for(i in 1:length(covs)) {
   plt <- ggplot(dat.plot, aes(x, HSI)) +
     geom_line(size = 3) +
     ylim(0,1) +
+    geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
+    geom_hline(yintercept = 0.55, linetype = "dotted", size = 1) +
     ylab(NULL) + xlab(cov.names[i]) +
     theme(axis.text.x=element_text(size=15)) +
     theme(axis.text.y=element_text(size=15)) +
@@ -181,8 +189,8 @@ save_plot("manuscript/Figure_NOFL_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi
 
 ###_________BBWO, combination model___________###
 mod <- loadObject("Model_CMB_BBWO")
-covs <- c("ccmort_loc", "blk_lndcc", "DBH", "SnagDens_23to50")
-cov.names <- c("LocBurn", "LandBurn", "DBH", "SnagDens23to50")
+covs <- c("ccmort_loc", "blk_lndcc", "DBH")
+cov.names <- c("LocBurn", "LandBurn", "DBH")
 
 for(i in 1:length(covs)) {
   dat.plot <- data.frame(x = seq(min(dat[, covs[i]]), max(dat[, covs[i]]), length.out = 20))
@@ -195,6 +203,8 @@ for(i in 1:length(covs)) {
   plt <- ggplot(dat.plot, aes(x, HSI)) +
     geom_line(size = 3) +
     ylim(0,1) +
+    geom_hline(yintercept = 0.2, linetype = "dotted", size = 1) +
+    geom_hline(yintercept = 0.55, linetype = "dotted", size = 1) +
     ylab(NULL) + xlab(cov.names[i]) +
     theme(axis.text.x=element_text(size=15)) +
     theme(axis.text.y=element_text(size=15)) +
@@ -209,8 +219,7 @@ theme_set(theme_bw())
 p <- ggdraw() + 
   draw_plot(plt.LocBurn, x = 0.05, y = 0.475, width = 0.475, height = 0.475) +
   draw_plot(plt.LandBurn, x = 0.525, y = 0.475, width = 0.475, height = 0.475) +
-  draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.475) +
-  draw_plot(plt.SnagDens23to50, x = 0.525, y = 0, width = 0.475, height = 0.475) +
+  draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.95, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "BBWO, combination model"),
                   size=c(27, 30), x=c(0.01, 0.15), y=c(0.06, 1), angle = c(90, 0))
 
@@ -248,6 +257,8 @@ for(i in 1:length(covs)) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
       geom_line(size = 3) +
       ylim(0,1) +
+      geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
+      geom_hline(yintercept = 0.55, linetype = "dotted", size = 1) +
       ylab(NULL) + xlab(cov.names[i]) +
       theme(axis.text.x=element_text(size=15)) +
       theme(axis.text.y=element_text(size=15)) +
@@ -257,6 +268,8 @@ for(i in 1:length(covs)) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
       geom_point(size = 10, shape = 16) +
       ylim(0,1) +
+      geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
+      geom_hline(yintercept = 0.55, linetype = "dotted", size = 1) +
       scale_x_continuous(limits = c(-0.5, 1.5), breaks = c(0, 1)) +
       ylab(NULL) + xlab(cov.names[i]) +
       theme(axis.text.x=element_text(size=15)) +
@@ -312,6 +325,8 @@ for(i in 1:length(covs)) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
       geom_line(size = 3) +
       ylim(0,1) +
+      geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
+      geom_hline(yintercept = 0.63, linetype = "dotted", size = 1) +
       ylab(NULL) + xlab(cov.names[i]) +
       theme(axis.text.x=element_text(size=15)) +
       theme(axis.text.y=element_text(size=15)) +
@@ -321,6 +336,8 @@ for(i in 1:length(covs)) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
       geom_point(size = 10, shape = 16) +
       ylim(0,1) +
+      geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
+      geom_hline(yintercept = 0.63, linetype = "dotted", size = 1) +
       scale_x_continuous(limits = c(-0.5, 1.5), breaks = c(0, 1)) +
       ylab(NULL) + xlab(cov.names[i]) +
       theme(axis.text.x=element_text(size=15)) +
@@ -336,7 +353,7 @@ for(i in 1:length(covs)) {
 theme_set(theme_bw())
 p <- ggdraw() + 
   draw_plot(plt.LocBurn, x = 0.05, y = 0.475, width = 0.475, height = 0.475) +
-  draw_plot(plt.LocSizeLrg, x = 0.525, y = 0.475, width = 0.475, height = 0.475) +
+  draw_plot(plt.LandBurn, x = 0.525, y = 0.475, width = 0.475, height = 0.475) +
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.475) +
   draw_plot(plt.BRKN, x = 0.525, y = 0, width = 0.475, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "WHWO, combination model"),
@@ -376,6 +393,7 @@ for(i in 1:length(covs)) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
       geom_line(size = 3) +
       ylim(0,1) +
+      geom_hline(yintercept = 0.68, linetype = "dotted", size = 1) +
       ylab(NULL) + xlab(cov.names[i]) +
       theme(axis.text.x=element_text(size=15)) +
       theme(axis.text.y=element_text(size=15)) +
@@ -385,6 +403,7 @@ for(i in 1:length(covs)) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
       geom_point(size = 10, shape = 16) +
       ylim(0,1) +
+      geom_hline(yintercept = 0.68, linetype = "dotted", size = 1) +
       scale_x_continuous(limits = c(-0.5, 1.5), breaks = c(0, 1)) +
       ylab(NULL) + xlab(cov.names[i]) +
       theme(axis.text.x=element_text(size=15)) +
@@ -401,7 +420,7 @@ theme_set(theme_bw())
 p <- ggdraw() + 
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.9) +
   draw_plot(plt.BRKN, x = 0.525, y = 0, width = 0.475, height = 0.9) +
-  draw_plot_label(label = c("Habitat Suitability Index (HSI)", "WHWO, combination model"),
+  draw_plot_label(label = c("Habitat Suitability Index (HSI)", "NOFL, combination model"),
                   size=c(27, 30), x=c(0.01, 0.3), y=c(0.08, 1), angle = c(90, 0),
                   hjust = c(0, 0))
 
