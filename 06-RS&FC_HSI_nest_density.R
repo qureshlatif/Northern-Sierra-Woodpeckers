@@ -15,9 +15,9 @@ library(WoodpeckerHSI)
 #library(cowplot)
 
 #____________________________________ Inputs _______________________________________#
-setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
+setwd("C:/Users/Quresh.Latif/files/projects/prior/PtBlue_Sierra/")
 load("Data_compiled.RData") # Workspace containing data
-NR_points <- "E:/GISData/PtBlue_Sierra/NR_points.dbf" # Needs to contain nest points with HSIs (randoms not used from here)
+NR_points <- "C:/Users/Quresh.Latif/files/GIS/prior/PtBlue_Sierra/NR_points.dbf" # Needs to contain nest points with HSIs (randoms not used from here)
 
 spp <- c("BBWO", "HAWO", "WHWO", "NOFL")
 area <- 9 * 4 #Area surveyed in 100 ha units X study duration.
@@ -85,19 +85,19 @@ for(s in spp) {
 }
 rm(s, nests, grid)
 
-for(s in spp) {
-  thrs <- thresholds[[s]]
-  nests <- eval(as.name(paste0("nest.", s)))$HSI
-  datg <- dat.grid %>% mutate(HSI = eval(as.name(paste0("HSI_", s))))
-  grid <- datg$HSI
-  dat.class <- calcClassDensities(nests, grid, thrs, area)
-
-  # Add bootstrapped CIs #
-  dat.class <- dat.class %>% HSIClassDensityBS(dat.sample = eval(as.name(paste0("nest.", s))),
-                                         datg, transects, thrs, area, R, UnitID = "Transect")
-  assign(paste0("dat.class.", s), dat.class)
-}
-rm(thrs, dat.class, nests, grid, datg)
+# for(s in spp) {
+#   thrs <- thresholds[[s]]
+#   nests <- eval(as.name(paste0("nest.", s)))$HSI
+#   datg <- dat.grid %>% mutate(HSI = eval(as.name(paste0("HSI_", s))))
+#   grid <- datg$HSI
+#   dat.class <- calcClassDensities(nests, grid, thrs, area)
+# 
+#   # Add bootstrapped CIs #
+#   dat.class <- dat.class %>% HSIClassDensityBS(dat.sample = eval(as.name(paste0("nest.", s))),
+#                                          datg, transects, thrs, area, R, UnitID = "Transect")
+#   assign(paste0("dat.class.", s), dat.class)
+# }
+# rm(thrs, dat.class, nests, grid, datg)
 
 # Cache and retrieve #
 #write.csv(dat.class.BBWO, "Plot_cache_CMB_BBWO_class.csv", row.names = F)
@@ -116,15 +116,15 @@ s <- "BBWO"
 thresholds <- c(0.2, 0.55) # Thresholds for low, moderate, and high suitability classes
 binPntSize <- 2
 classPntSize <- 5
-tickLabSize <- 15
+tickLabSize <- 20
 
 # Parameters for additional plot labels
-classLabSize <- 5
-labxy <- rbind(Low = c(x = 0.1, y = 12.3), 
-               Moderate = c(x = 0.375, y = 12.3),
-               High = c(x = 0.82, y = 12.3),
+classLabSize <- 10
+labxy <- rbind(Low = c(x = 0.1, y = 11), 
+               Moderate = c(x = 0.375, y = 11),
+               High = c(x = 0.85, y = 11),
                spp = c(x = 0.1, y = 12.8))
-sppLabSize <- 6
+sppLabSize <- 11
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
@@ -132,7 +132,7 @@ dat.class <- eval(as.name(paste0("dat.class.", s)))
 nests <- eval(as.name(paste0("nest.", s)))$HSI
 
 plt <- plotDens(dat.plot, sampleHSIs = nests, dat.class, thresholds, binPntSize,
-                classPntSize, tickLabSize,
+                classPntSize, tickLabSize = tickLabSize,
                 BS = T, ylabel = NULL, xlabel = NULL)
 plt <- plt +
   annotate("text", x = labxy[1, 1], y = labxy[1, 2], label = "Low", size = classLabSize) +
@@ -149,15 +149,15 @@ s <- "HAWO"
 thresholds <- c(0.3, 0.55) # Thresholds for low, moderate, and high suitability classes
 binPntSize <- 2
 classPntSize <- 5
-tickLabSize <- 15
+tickLabSize <- 20
 
 # Parameters for additional plot labels
-classLabSize <- 5
-labxy <- rbind(Low = c(x = 0.18, y = 14.6), 
-               Moderate = c(x = 0.425, y = 14.6),
-               High = c(x = 0.775, y = 14.6),
+classLabSize <- 10
+labxy <- rbind(Low = c(x = 0.18, y = 13.5), 
+               Moderate = c(x = 0.425, y = 13.5),
+               High = c(x = 0.775, y = 13.5),
                spp = c(x = 0.15, y = 15))
-sppLabSize <- 6
+sppLabSize <- 11
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
@@ -165,7 +165,7 @@ dat.class <- eval(as.name(paste0("dat.class.", s)))
 nests <- eval(as.name(paste0("nest.", s)))$HSI
 
 plt <- plotDens(dat.plot, sampleHSIs = nests, dat.class, thresholds, binPntSize,
-                classPntSize, tickLabSize,
+                classPntSize, tickLabSize = tickLabSize,
                 BS = T, ylabel = NULL, xlabel = NULL)
 plt <- plt +
   annotate("text", x = labxy[1, 1], y = labxy[1, 2], label = "Low", size = classLabSize) +
@@ -182,15 +182,15 @@ s <- "WHWO"
 thresholds <- c(0.3, 0.63) # Thresholds for low, moderate, and high suitability classes
 binPntSize <- 2
 classPntSize <- 5
-tickLabSize <- 15
+tickLabSize <- 20
 
 # Parameters for additional plot labels
-classLabSize <- 5
-labxy <- rbind(Low = c(x = 0.18, y = 27), 
-               Moderate = c(x = 0.465, y = 27),
-               High = c(x = 0.82, y = 27),
+classLabSize <- 10
+labxy <- rbind(Low = c(x = 0.18, y = 25), 
+               Moderate = c(x = 0.465, y = 25),
+               High = c(x = 0.9, y = 25),
                spp = c(x = 0.1, y = 28))
-sppLabSize <- 6
+sppLabSize <- 11
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
@@ -198,7 +198,7 @@ dat.class <- eval(as.name(paste0("dat.class.", s)))
 nests <- eval(as.name(paste0("nest.", s)))$HSI
 
 plt <- plotDens(dat.plot, sampleHSIs = nests, dat.class, thresholds, binPntSize,
-                classPntSize, tickLabSize,
+                classPntSize, tickLabSize = tickLabSize,
                 BS = T, ylabel = NULL, xlabel = NULL)
 plt <- plt +
   annotate("text", x = labxy[1, 1], y = labxy[1, 2], label = "Low", size = classLabSize) +
@@ -215,14 +215,14 @@ s <- "NOFL"
 thresholds <- c(0.68) # Thresholds for low, moderate, and high suitability classes
 binPntSize <- 2
 classPntSize <- 5
-tickLabSize <- 15
+tickLabSize <- 20
 
 # Parameters for additional plot labels
-classLabSize <- 5
-labxy <- rbind(Low = c(x = 0.34, y = 25), 
-               High = c(x = 0.86, y = 25),
+classLabSize <- 10
+labxy <- rbind(Low = c(x = 0.34, y = 23), 
+               High = c(x = 0.75, y = 23),
                spp = c(x = 0.1, y = 26))
-sppLabSize <- 6
+sppLabSize <-11
 #____________#
 
 dat.plot <- eval(as.name(paste0("tab.", s)))
@@ -230,7 +230,7 @@ dat.class <- eval(as.name(paste0("dat.class.", s)))
 nests <- eval(as.name(paste0("nest.", s)))$HSI
 
 plt <- plotDens(dat.plot, sampleHSIs = nests, dat.class, thresholds, binPntSize,
-                classPntSize, tickLabSize,
+                classPntSize, tickLabSize = tickLabSize,
                 BS = T, ylabel = NULL, xlabel = NULL)
 plt <- plt +
   annotate("text", x = labxy[1, 1], y = labxy[1, 2], label = "Low", size = classLabSize) +

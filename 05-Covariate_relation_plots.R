@@ -11,7 +11,8 @@ library(R.utils)
 library(WoodpeckerHSI)
 
 #____________________________________ Inputs _______________________________________#
-setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
+#setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
+setwd("C:/Users/Quresh.Latif/files/projects/prior/PtBlue_Sierra/")
 load("Data_compiled.RData") # Workspace containing data
 #___________________________________________________________________________________#
 
@@ -31,8 +32,12 @@ for(i in 1:length(covs)) {
   dat.plotz[, covs[i]] <- (dat.plot$x - scale.factors[covs[i], "mean"]) /
     scale.factors[covs[i], "SD"]
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   plt <- ggplot(dat.plot, aes(x, HSI)) +
+    geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
     geom_line(size = 3) +
     ylim(0,1) +
     geom_hline(yintercept = 0.35, linetype = "dotted", size = 1) +
@@ -72,8 +77,12 @@ for(i in 1:length(covs)) {
   dat.plotz[, covs[i]] <- (dat.plot$x - scale.factors[covs[i], "mean"]) /
     scale.factors[covs[i], "SD"]
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   plt <- ggplot(dat.plot, aes(x, HSI)) +
+    geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
     geom_line(size = 3) +
     ylim(0,1) +
     geom_hline(yintercept = 0.25, linetype = "dotted", size = 1) +
@@ -113,8 +122,12 @@ for(i in 1:length(covs)) {
   dat.plotz[, covs[i]] <- (dat.plot$x - scale.factors[covs[i], "mean"]) /
     scale.factors[covs[i], "SD"]
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   plt <- ggplot(dat.plot, aes(x, HSI)) +
+    geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
     geom_line(size = 3) +
     ylim(0,1) +
     geom_hline(yintercept = 0.4, linetype = "dotted", size = 1) +
@@ -134,7 +147,7 @@ p <- ggdraw() +
   draw_plot(plt.LocBurn, x = 0.05, y = 0, width = 0.475, height = 0.9) +
   draw_plot(plt.LandBurn, x = 0.525, y = 0, width = 0.475, height = 0.9) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "WHWO, remotely sensed model"),
-                  size=c(27, 30), x=c(0.01, 0.3), y=c(0.08, 1), angle = c(90, 0), hjust = c(0, 0))
+                  size=c(27, 30), x=c(0.01, 0.3), y=c(0.04, 1), angle = c(90, 0), hjust = c(0, 0))
 
 #p
 
@@ -153,8 +166,12 @@ for(i in 1:length(covs)) {
   dat.plotz[, covs[i]] <- (dat.plot$x - scale.factors[covs[i], "mean"]) /
     scale.factors[covs[i], "SD"]
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   plt <- ggplot(dat.plot, aes(x, HSI)) +
+    geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
     geom_line(size = 3) +
     ylim(0,1) +
     geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
@@ -199,8 +216,12 @@ for(i in 1:length(covs)) {
   dat.plotz[, covs[i]] <- (dat.plot$x - scale.factors[covs[i], "mean"]) /
     scale.factors[covs[i], "SD"]
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   plt <- ggplot(dat.plot, aes(x, HSI)) +
+    geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
     geom_line(size = 3) +
     ylim(0,1) +
     geom_hline(yintercept = 0.2, linetype = "dotted", size = 1) +
@@ -252,9 +273,13 @@ for(i in 1:length(covs)) {
       scale.factors[covs[i], "SD"]
   } 
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   if(!i %in% categorical) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
+      geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
       geom_line(size = 3) +
       ylim(0,1) +
       geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
@@ -266,6 +291,7 @@ for(i in 1:length(covs)) {
       theme(axis.title.y=element_text(size=20))
   } else {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
+      geom_errorbar(aes(ymin = HSI.lo, ymax = HSI.hi), size = 2, width = 0.15) +
       geom_point(size = 10, shape = 16) +
       ylim(0,1) +
       geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
@@ -320,9 +346,13 @@ for(i in 1:length(covs)) {
       scale.factors[covs[i], "SD"]
   } 
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   if(!i %in% categorical) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
+      geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
       geom_line(size = 3) +
       ylim(0,1) +
       geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
@@ -334,6 +364,7 @@ for(i in 1:length(covs)) {
       theme(axis.title.y=element_text(size=20))
   } else {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
+      geom_errorbar(aes(ymin = HSI.lo, ymax = HSI.hi), size = 2, width = 0.15) +
       geom_point(size = 10, shape = 16) +
       ylim(0,1) +
       geom_hline(yintercept = 0.3, linetype = "dotted", size = 1) +
@@ -388,9 +419,13 @@ for(i in 1:length(covs)) {
       scale.factors[covs[i], "SD"]
   } 
   dat.plot$HSI <- predict(mod, dat.plotz, type = "response")
+  link <- predict(mod, dat.plotz, type = "link", se.fit = T)
+  dat.plot$HSI.lo <- expit(link$fit - 1.96 * link$se.fit)
+  dat.plot$HSI.hi <- expit(link$fit + 1.96 * link$se.fit)
   
   if(!i %in% categorical) {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
+      geom_ribbon(aes(ymin = HSI.lo, ymax = HSI.hi), alpha = 0.3) +
       geom_line(size = 3) +
       ylim(0,1) +
       geom_hline(yintercept = 0.68, linetype = "dotted", size = 1) +
@@ -401,6 +436,7 @@ for(i in 1:length(covs)) {
       theme(axis.title.y=element_text(size=20))
   } else {
     plt <- ggplot(dat.plot, aes(x, HSI)) +
+      geom_errorbar(aes(ymin = HSI.lo, ymax = HSI.hi), size = 2, width = 0.15) +
       geom_point(size = 10, shape = 16) +
       ylim(0,1) +
       geom_hline(yintercept = 0.68, linetype = "dotted", size = 1) +
@@ -421,7 +457,7 @@ p <- ggdraw() +
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.9) +
   draw_plot(plt.BRKN, x = 0.525, y = 0, width = 0.475, height = 0.9) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "NOFL, combination model"),
-                  size=c(27, 30), x=c(0.01, 0.3), y=c(0.08, 1), angle = c(90, 0),
+                  size=c(27, 30), x=c(0.01, 0.3), y=c(0.04, 1), angle = c(90, 0),
                   hjust = c(0, 0))
 
 #p

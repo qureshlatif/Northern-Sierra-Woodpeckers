@@ -1,4 +1,4 @@
-setwd("F:/research stuff/FS_PostDoc/consult_&_collaborate/PtBlue_Sierra/")
+setwd("C:/Users/Quresh.Latif/files/projects/prior/PtBlue_Sierra/")
 #################################################################################################
 # Purpose: Develop models with field-collected and remotely sensed variables for 4 species with #
 # sufficient sample sizes for 3-fold cross-fire validation.                                     #                                                         #
