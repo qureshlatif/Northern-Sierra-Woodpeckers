@@ -229,4 +229,4 @@ p <- ggdraw() +
                   size=c(30, 30), x=c(0.01, 0.2), y=c(0.15, 0.05), angle = c(90, 0))
 #p
 
-save_plot("manuscript/Figure_RSmod_HSI_NestDens.tiff", p, ncol = 3.3, nrow = 3.3, dpi = 200)
+save_plot("manuscript/Figure_RSmod_HSI_NestDens.tiff", p, ncol = 3.3, nrow = 3.3, dpi = 1200)

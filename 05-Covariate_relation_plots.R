@@ -58,11 +58,11 @@ p <- ggdraw() +
   draw_plot(plt.LandBurn, x = 0.525, y = 0.475, width = 0.475, height = 0.475) +
   draw_plot(plt.LocCC, x = 0.05, y = 0, width = 0.475, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "BBWO, remotely sensed model"),
-                  size=c(27, 30), x=c(0.01, 0.05), y=c(0.06, 1), angle = c(90, 0))
+                  size=c(27, 30), x=c(0.01, 0.2), y=c(0.06, 1), angle = c(90, 0))
 
 #p
 
-save_plot("manuscript/Figure_BBWO_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi = 200)
+save_plot("manuscript/Figure_BBWO_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi = 600)
 ###_______________________________________________###
 
 ###_________HAWO, remotely sensed model___________###
@@ -103,11 +103,11 @@ p <- ggdraw() +
   draw_plot(plt.LandCC, x = 0.525, y = 0.475, width = 0.475, height = 0.475) +
   draw_plot(plt.LocSizeLrg, x = 0.05, y = 0, width = 0.475, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "HAWO, remotely sensed model"),
-                  size=c(27, 30), x=c(0.01, 0.05), y=c(0.06, 1), angle = c(90, 0))
+                  size=c(27, 30), x=c(0.01, 0.2), y=c(0.06, 1), angle = c(90, 0))
 
 #p
 
-save_plot("manuscript/Figure_HAWO_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi = 200)
+save_plot("manuscript/Figure_HAWO_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi = 600)
 ###_______________________________________________###
 
 ###_________WHWO, remotely sensed model___________###
@@ -147,11 +147,11 @@ p <- ggdraw() +
   draw_plot(plt.LocBurn, x = 0.05, y = 0, width = 0.475, height = 0.9) +
   draw_plot(plt.LandBurn, x = 0.525, y = 0, width = 0.475, height = 0.9) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "WHWO, remotely sensed model"),
-                  size=c(27, 30), x=c(0.01, 0.3), y=c(0.04, 1), angle = c(90, 0), hjust = c(0, 0))
+                  size=c(27, 30), x=c(0.01, 0.35), y=c(0.04, 1), angle = c(90, 0), hjust = c(0, 0))
 
 #p
 
-save_plot("manuscript/Figure_WHWO_RS_relations.tiff", p, ncol = 3, nrow = 1.5, dpi = 200)
+save_plot("manuscript/Figure_WHWO_RS_relations.tiff", p, ncol = 3, nrow = 1.5, dpi = 600)
 ###_______________________________________________###
 
 ###_________NOFL, remotely sensed model___________###
@@ -193,15 +193,15 @@ p <- ggdraw() +
   draw_plot(plt.LocSizeLrg, x = 0.05, y = 0, width = 0.475, height = 0.475) +
   draw_plot(plt.LandSizeLrg, x = 0.525, y = 0, width = 0.475, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "NOFL, remotely sensed model"),
-                  size=c(27, 30), x=c(0.01, 0.05), y=c(0.06, 1), angle = c(90, 0))
+                  size=c(27, 30), x=c(0.01, 0.2), y=c(0.06, 1), angle = c(90, 0))
 
 #p
 
-save_plot("manuscript/Figure_NOFL_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi = 200)
+save_plot("manuscript/Figure_NOFL_RS_relations.tiff", p, ncol = 3, nrow = 3, dpi = 600)
 ###_______________________________________________###
 
 ######################
-# Cobmination models #
+# Combination models #
 ######################
 
 ###_________BBWO, combination model___________###
@@ -242,11 +242,11 @@ p <- ggdraw() +
   draw_plot(plt.LandBurn, x = 0.525, y = 0.475, width = 0.475, height = 0.475) +
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.95, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "BBWO, combination model"),
-                  size=c(27, 30), x=c(0.01, 0.15), y=c(0.06, 1), angle = c(90, 0))
+                  size=c(27, 30), x=c(0.01, 0.23), y=c(0.06, 1), angle = c(90, 0))
 
 #p
 
-save_plot("manuscript/Figure_BBWO_CMB_relations.tiff", p, ncol = 3, nrow = 3, dpi = 200)
+save_plot("manuscript/Figure_BBWO_CMB_relations.tiff", p, ncol = 3, nrow = 3, dpi = 600)
 ###_______________________________________________###
 
 ###_________HAWO, combination model___________###
@@ -315,11 +315,11 @@ p <- ggdraw() +
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.475) +
   draw_plot(plt.BRKN, x = 0.525, y = 0, width = 0.475, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "HAWO, combination model"),
-                  size=c(27, 30), x=c(0.01, 0.15), y=c(0.06, 1), angle = c(90, 0))
+                  size=c(27, 30), x=c(0.01, 0.23), y=c(0.06, 1), angle = c(90, 0))
 
 #p
 
-save_plot("manuscript/Figure_HAWO_CMB_relations.tiff", p, ncol = 3, nrow = 3, dpi = 200)
+save_plot("manuscript/Figure_HAWO_CMB_relations.tiff", p, ncol = 3, nrow = 3, dpi = 600)
 ###_______________________________________________###
 
 ###_________WHWO, combination model___________###
@@ -388,11 +388,11 @@ p <- ggdraw() +
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.475) +
   draw_plot(plt.BRKN, x = 0.525, y = 0, width = 0.475, height = 0.475) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "WHWO, combination model"),
-                  size=c(27, 30), x=c(0.01, 0.15), y=c(0.06, 1), angle = c(90, 0))
+                  size=c(27, 30), x=c(0.01, 0.23), y=c(0.06, 1), angle = c(90, 0))
 
 #p
 
-save_plot("manuscript/Figure_WHWO_CMB_relations.tiff", p, ncol = 3, nrow = 3, dpi = 200)
+save_plot("manuscript/Figure_WHWO_CMB_relations.tiff", p, ncol = 3, nrow = 3, dpi = 600)
 ###_______________________________________________###
 
 ###_________NOFL, combination model___________###
@@ -457,10 +457,10 @@ p <- ggdraw() +
   draw_plot(plt.DBH, x = 0.05, y = 0, width = 0.475, height = 0.9) +
   draw_plot(plt.BRKN, x = 0.525, y = 0, width = 0.475, height = 0.9) +
   draw_plot_label(label = c("Habitat Suitability Index (HSI)", "NOFL, combination model"),
-                  size=c(27, 30), x=c(0.01, 0.3), y=c(0.04, 1), angle = c(90, 0),
+                  size=c(27, 30), x=c(0.01, 0.4), y=c(0.04, 1), angle = c(90, 0),
                   hjust = c(0, 0))
 
 #p
 
-save_plot("manuscript/Figure_NOFL_CMB_relations.tiff", p, ncol = 3, nrow = 1.5, dpi = 200)
+save_plot("manuscript/Figure_NOFL_CMB_relations.tiff", p, ncol = 3, nrow = 1.5, dpi = 600)
 ###_______________________________________________###
